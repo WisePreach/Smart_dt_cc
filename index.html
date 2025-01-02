@@ -3,54 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart DT</title>
+  <title>CC Chat - Smart DT</title>
   <!-- Include SheetJS Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="script.js" defer></script>
   <style>
-    body {
-      display: flex;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      height: 100vh;
+    /* ========== Global Styles ========== */
+    * {
+      box-sizing: border-box;
     }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ========== Header ========== */
+    #header {
+      background-color: #FC8019; /* Swiggy's brand color */
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    #header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    #header h3 {
+      margin: 0;
+      font-weight: 400;
+    }
+
+    /* ========== Main Container ========== */
+    #main-container {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+    }
+
+    /* ========== Left Pane ========== */
     #left-pane {
       width: 40%;
       padding: 20px;
       border-right: 1px solid #ccc;
-      box-sizing: border-box;
       overflow-y: auto;
     }
+    #left-pane label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+
+    /* ========== Right Pane ========== */
     #right-pane {
       width: 60%;
       padding: 20px;
-      box-sizing: border-box;
       overflow-y: auto;
     }
+    h2 {
+      margin-top: 0;
+    }
+
+    /* ========== Dropdown Styles ========== */
     select {
       width: 100%;
       margin: 10px 0;
       padding: 5px;
     }
-    h2, h1 {
-      margin-top: 0;
-    }
-    label {
-      font-weight: bold;
-      margin-top: 10px;
-      display: block;
-    }
-    /* Preserve line breaks in the output text */
+
+    /* ========== Output Styles ========== */
     #result {
-      white-space: pre-wrap;
+      white-space: pre-wrap; /* preserve line breaks in the output */
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 100px;
+      margin-top: 10px;
+    }
+
+    /* ========== Buttons ========== */
+    .reset-button {
+      background-color: #FC8019;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .reset-button:hover {
+      background-color: #e86b0d;
     }
   </style>
 </head>
 <body>
-  <!-- Left Pane: Dropdowns -->
-  <div id="left-pane">
-    <h1>Cascading Filter Tool</h1>
-    <div id="dropdowns">
+  <!-- Header Section -->
+  <div id="header">
+    <h1>CC Chat - Smart DT</h1>
+    <h3>Swiggy</h3>
+  </div>
+
+  <!-- Main Container -->
+  <div id="main-container">
+    <!-- Left Pane: Dropdowns & Reset Button -->
+    <div id="left-pane">
       <label for="col1">L1 Disposition:</label>
       <select id="col1"></select>
 
@@ -68,13 +126,16 @@
 
       <label for="col6">Customer Disposition:</label>
       <select id="col6"></select>
-    </div>
-  </div>
 
-  <!-- Right Pane: Output -->
-  <div id="right-pane">
-    <h2>Output:</h2>
-    <div id="result">No result yet</div>
+      <!-- Reset Button -->
+      <button class="reset-button" id="resetBtn">Reset</button>
+    </div>
+
+    <!-- Right Pane: Output -->
+    <div id="right-pane">
+      <h2>Output:</h2>
+      <div id="result">No result yet</div>
+    </div>
   </div>
 </body>
 </html>
