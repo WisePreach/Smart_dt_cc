@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart DT</title>
+  <!-- Include SheetJS Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="script.js" defer></script>
+  <style>
+    body {
+      display: flex;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      height: 100vh;
+    }
+    #left-pane {
+      width: 40%;
+      padding: 20px;
+      border-right: 1px solid #ccc;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    #right-pane {
+      width: 60%;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    select {
+      width: 100%;
+      margin: 10px 0;
+      padding: 5px;
+    }
+    h2, h1 {
+      margin-top: 0;
+    }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+    /* Preserve line breaks in the output text */
+    #result {
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <!-- Left Pane: Dropdowns -->
+  <div id="left-pane">
+    <h1>Cascading Filter Tool</h1>
+    <div id="dropdowns">
+      <label for="col1">L1 Disposition:</label>
+      <select id="col1"></select>
+
+      <label for="col2">L2 Disposition:</label>
+      <select id="col2"></select>
+
+      <label for="col3">L3 Disposition:</label>
+      <select id="col3"></select>
+
+      <label for="col4">Restaurant Disposition:</label>
+      <select id="col4"></select>
+
+      <label for="col5">DE Disposition:</label>
+      <select id="col5"></select>
+
+      <label for="col6">Customer Disposition:</label>
+      <select id="col6"></select>
+    </div>
+  </div>
+
+  <!-- Right Pane: Output -->
+  <div id="right-pane">
+    <h2>Output:</h2>
+    <div id="result">No result yet</div>
+  </div>
+</body>
+</html>
