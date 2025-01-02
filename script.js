@@ -23,7 +23,10 @@ let excelData = [];
  * Load the Excel File Automatically on Page Load
  ****************************************************************************/
 window.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM content loaded - starting to load Excel file...");
   loadExcelFile("DynamicNBA.xlsx");
+  
+  // Set up Reset button once the DOM is ready
   setupResetButton();
 });
 
@@ -37,6 +40,8 @@ function loadExcelFile(filePath) {
 
   xhr.onload = function () {
     if (xhr.status >= 200 && xhr.status < 300) {
+      console.log("Excel file loaded successfully. Parsing workbook...");
+
       const workbook = XLSX.read(xhr.response, { type: "array" });
       // Load the first sheet by default:
       const firstSheetName = workbook.SheetNames[0];
@@ -46,7 +51,9 @@ function loadExcelFile(filePath) {
       // defval: "" ensures empty cells become empty string instead of undefined
       excelData = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-      // Now that data is loaded, initialize the dropdowns
+      console.log("Data parsed. Total rows:", excelData.length);
+
+      // Now that data is loaded, initialize the dropdowns and listeners
       setupDropdownListeners();
       initializeDropdowns();
     } else {
@@ -73,25 +80,31 @@ function setupDropdownListeners() {
     const dropdownElem = document.getElementById(dropdownId);
     dropdownElem.addEventListener("change", () => handleSelection(index));
   });
+  console.log("Dropdown listeners attached.");
 }
 
 /****************************************************************************
  * 3. Initialize the first dropdown
  ****************************************************************************/
 function initializeDropdowns() {
-  // Clear all dropdowns first
+  console.log("Initializing dropdowns...");
+
+  // 1) Clear all dropdowns
   dropdownIds.forEach((id) => {
     document.getElementById(id).innerHTML = "<option value=''>--Select--</option>";
   });
 
-  // If we have data, populate the first dropdown
+  // 2) If we have data, populate the first dropdown
   if (excelData.length > 0) {
     const colName = columnHeaders[0]; // L1_Disposition__c
     const uniqueValues = getUniqueValues(excelData, colName);
     populateDropdown(dropdownIds[0], uniqueValues);
+    console.log("First dropdown populated with", uniqueValues.length, "unique values.");
+  } else {
+    console.warn("No data found to populate the dropdowns.");
   }
 
-  // Clear output
+  // 3) Clear the output text
   document.getElementById("result").textContent = "No result yet";
 }
 
@@ -101,6 +114,7 @@ function initializeDropdowns() {
 function populateDropdown(dropdownId, values) {
   const dropdown = document.getElementById(dropdownId);
   dropdown.innerHTML = "<option value=''>--Select--</option>";
+
   values.forEach((val) => {
     const option = document.createElement("option");
     option.value = val;
@@ -127,6 +141,8 @@ function getUniqueValues(dataArray, colName) {
  * 6. Handle each dropdown selection in a hierarchical manner
  ****************************************************************************/
 function handleSelection(changedIndex) {
+  console.log(`Dropdown ${changedIndex + 1} changed. Applying filters...`);
+
   // 1) Gather the current selections for all 6 columns
   const filters = dropdownIds.map((ddId) => {
     const val = document.getElementById(ddId).value;
@@ -135,20 +151,20 @@ function handleSelection(changedIndex) {
 
   // 2) Perform strict filter to see if exactly 1 row matches
   const strictlyMatchedRows = strictFilter(excelData, filters);
+  console.log("Strict filter found", strictlyMatchedRows.length, "matching rows.");
 
+  // If exactly 1 row matches, show it
   if (strictlyMatchedRows.length === 1) {
-    // We have a unique match (including line breaks if present)
     const lineBreakContent = strictlyMatchedRows[0][columnHeaders[6]] || "";
     document.getElementById("result").textContent = lineBreakContent;
   } else {
-    // No unique match yet or multiple matches
     document.getElementById("result").textContent = "";
   }
 
   // 3) Clear subsequent dropdowns (anything after changedIndex)
   clearSubsequentDropdowns(changedIndex + 1);
 
-  // 4) Populate the next dropdown(s) if needed
+  // 4) Populate the next dropdown(s) if needed via relaxed filter
   let relaxedData = relaxedFilter(excelData, filters);
 
   for (let i = changedIndex + 1; i < dropdownIds.length; i++) {
@@ -156,7 +172,7 @@ function handleSelection(changedIndex) {
     const uniqueVals = getUniqueValues(relaxedData, nextColName);
     populateDropdown(dropdownIds[i], uniqueVals);
 
-    // If a value was already selected in that dropdown, re-filter
+    // If a value was already selected in that dropdown, refine relaxedData
     const chosenVal = document.getElementById(dropdownIds[i]).value;
     if (chosenVal) {
       relaxedData = relaxedData.filter(
@@ -215,6 +231,7 @@ function relaxedFilter(dataArray, filters) {
  * 9. Clear subsequent dropdowns (from "startIndex" onward)
  ****************************************************************************/
 function clearSubsequentDropdowns(startIndex) {
+  console.log("Clearing dropdowns from index", startIndex, "to end.");
   for (let i = startIndex; i < dropdownIds.length; i++) {
     document.getElementById(dropdownIds[i]).innerHTML =
       "<option value=''>--Select--</option>";
@@ -226,8 +243,12 @@ function clearSubsequentDropdowns(startIndex) {
  ****************************************************************************/
 function setupResetButton() {
   const btn = document.getElementById("resetBtn");
+  if (!btn) {
+    console.error("Reset button not found in HTML (id='resetBtn').");
+    return;
+  }
   btn.addEventListener("click", () => {
-    // Clear all dropdowns & re-initialize
+    console.log("Reset button clicked. Re-initializing dropdowns...");
     initializeDropdowns();
   });
 }
