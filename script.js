@@ -24,6 +24,7 @@ let excelData = [];
  ****************************************************************************/
 window.addEventListener("DOMContentLoaded", () => {
   loadExcelFile("DynamicNBA.xlsx");
+  setupResetButton();
 });
 
 /****************************************************************************
@@ -136,8 +137,7 @@ function handleSelection(changedIndex) {
   const strictlyMatchedRows = strictFilter(excelData, filters);
 
   if (strictlyMatchedRows.length === 1) {
-    // We have a unique match
-    // This might contain line breaks
+    // We have a unique match (including line breaks if present)
     const lineBreakContent = strictlyMatchedRows[0][columnHeaders[6]] || "";
     document.getElementById("result").textContent = lineBreakContent;
   } else {
@@ -219,4 +219,15 @@ function clearSubsequentDropdowns(startIndex) {
     document.getElementById(dropdownIds[i]).innerHTML =
       "<option value=''>--Select--</option>";
   }
+}
+
+/****************************************************************************
+ * 10. RESET Button Functionality
+ ****************************************************************************/
+function setupResetButton() {
+  const btn = document.getElementById("resetBtn");
+  btn.addEventListener("click", () => {
+    // Clear all dropdowns & re-initialize
+    initializeDropdowns();
+  });
 }
